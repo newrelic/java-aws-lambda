@@ -1,0 +1,32 @@
+apply plugin: 'java'
+
+dependencies {
+    // TODO make this provided instead of compile?
+    compile 'com.amazonaws:aws-lambda-java-core:1.1.0'
+    compile 'com.amazonaws:aws-lambda-java-events:2.2.2' // 2.2.2 is earliest version that has all needed event sources
+    compile 'com.amazonaws:aws-java-sdk-s3:1.11.163'
+    compile 'com.amazonaws:aws-java-sdk-kinesis:1.11.163'
+    compile 'com.amazonaws:aws-java-sdk-dynamodb:1.11.163'
+    compile 'com.googlecode.json-simple:json-simple:1.1'
+    compile('io.opentracing:opentracing-api:0.31.0') { transitive = false }
+    compile('io.opentracing:opentracing-util:0.31.0') { transitive = false }
+    compile('io.opentracing:opentracing-noop:0.31.0') { transitive = false }
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'io.opentracing:opentracing-mock:0.31.0'
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Java AWS Lambda OpenTracing Instrumentation', 'Implementation-Version': '1.0.1'
+    }
+
+    // TODO, we don't really want all deps, at least I don't think
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+
+
+
