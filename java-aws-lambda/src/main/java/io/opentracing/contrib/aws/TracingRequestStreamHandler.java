@@ -6,7 +6,6 @@ import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
 import io.opentracing.util.GlobalTracer;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -14,49 +13,52 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Tracing request stream handler that creates a span on every invocation of a Lambda.
  *
- * Implement this interface and update your AWS Lambda Handler name to reference your class name, e.g., com.mycompany.HandlerClass
+ * <p>Implement this interface and update your AWS Lambda Handler name to reference your class name,
+ * e.g., com.mycompany.HandlerClass
  */
-public interface TracingRequestStreamHandler extends com.amazonaws.services.lambda.runtime.RequestStreamHandler {
+public interface TracingRequestStreamHandler
+    extends com.amazonaws.services.lambda.runtime.RequestStreamHandler {
 
-    AtomicBoolean isColdStart = new AtomicBoolean(true);
+  AtomicBoolean isColdStart = new AtomicBoolean(true);
 
-    /**
-     * Method that handles the Lambda function request.
-     *
-     * Override this method in your code.
-     *
-     * @param input The Lambda Function input stream
-     * @param output The Lambda Function output stream
-     * @param context The Lambda execution environment context object
-     */
-    void doHandleRequest(InputStream input, OutputStream output, Context context);
+  /**
+   * Method that handles the Lambda function request.
+   *
+   * <p>Override this method in your code.
+   *
+   * @param input The Lambda Function input stream
+   * @param output The Lambda Function output stream
+   * @param context The Lambda execution environment context object
+   */
+  void doHandleRequest(InputStream input, OutputStream output, Context context);
 
-    default void handleRequest(InputStream input, OutputStream output, Context context) {
-        final Tracer tracer = GlobalTracer.get();
-        final SpanContext spanContext = extractContext(tracer, input);
+  default void handleRequest(InputStream input, OutputStream output, Context context) {
+    final Tracer tracer = GlobalTracer.get();
+    final SpanContext spanContext = extractContext(tracer, input);
 
-        try (Scope scope = tracer.buildSpan("handleRequest").asChildOf(spanContext).startActive(true)) {
-            SpanUtil.setTags(scope, context, input, isColdStart);
-            try {
-                doHandleRequest(input, output, context);
-            } catch (Throwable throwable) {
-                scope.span().log(SpanUtil.createErrorAttributes(throwable));
-                throw throwable;
-            }
-        }
+    try (Scope scope = tracer.buildSpan("handleRequest").asChildOf(spanContext).startActive(true)) {
+      SpanUtil.setTags(scope, context, input, isColdStart);
+      try {
+        doHandleRequest(input, output, context);
+      } catch (Throwable throwable) {
+        scope.span().log(SpanUtil.createErrorAttributes(throwable));
+        throw throwable;
+      }
     }
+  }
 
-    /**
-     * Override to extract context from Input.
-     *
-     * Implementations should call {@link Tracer#extract(Format, Object)} and return the extracted SpanContext.
-     *
-     * @param tracer OpenTracing tracer
-     * @param input Input to Lambda function
-     * @return SpanContext Extracted from input, null if there was no context or there was an issue extracting this context
-     */
-    default SpanContext extractContext(Tracer tracer, InputStream input) {
-        return null;
-    }
-
+  /**
+   * Override to extract context from Input.
+   *
+   * <p>Implementations should call {@link Tracer#extract(Format, Object)} and return the extracted
+   * SpanContext.
+   *
+   * @param tracer OpenTracing tracer
+   * @param input Input to Lambda function
+   * @return SpanContext Extracted from input, null if there was no context or there was an issue
+   *     extracting this context
+   */
+  default SpanContext extractContext(Tracer tracer, InputStream input) {
+    return null;
+  }
 }
