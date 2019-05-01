@@ -52,7 +52,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'Implementation-Title': 'AWS Lambda OpenTracing Java SDK', 'Implementation-Version': '1.0.1'
+        attributes 'Implementation-Title': 'AWS Lambda OpenTracing Java SDK', 'Implementation-Version': project.version
     }
 }
 
