@@ -13,7 +13,7 @@
  *
  */
 
-package io.opentracing.contrib.aws;
+package com.newrelic.opentracing.aws;
 
 import com.amazonaws.services.lambda.runtime.ClientContext;
 import com.amazonaws.services.lambda.runtime.CognitoIdentity;
@@ -30,7 +30,6 @@ import com.amazonaws.services.lambda.runtime.events.S3Event;
 import com.amazonaws.services.lambda.runtime.events.SNSEvent;
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
 import com.amazonaws.services.s3.event.S3EventNotification;
-import io.opentracing.GlobalTracerTestUtils;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import java.util.ArrayList;
@@ -40,6 +39,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TracingRequestHandlerTest {
@@ -263,32 +263,32 @@ public class TracingRequestHandlerTest {
         "APIGatewayProxyRequestEventUserARN", span.tags().get("aws.lambda.eventSource.arn"));
   }
 
-  //    @Test // TODO we would like this but there doesn't seem to be an available arn currently
-  //    public void testCloudWatchLogsEvent() {
-  //        final MyCloudWatchRequestHandler myCloudWatchRequestHandler = new
-  // MyCloudWatchRequestHandler();
-  //
-  //        final CloudWatchLogsEvent cloudWatchLogsEvent = new CloudWatchLogsEvent();
-  //
-  //        myCloudWatchRequestHandler.handleRequest(cloudWatchLogsEvent, createContext());
-  //        final MockSpan span = mockTracer.finishedSpans().get(0);
-  //        Assert.assertEquals("CloudWatchLogsEventSourceARN",
-  // span.tags().get("aws.lambda.eventSource.arn"));
-  //    }
+  @Test
+  @Ignore("We would like this but there doesn't seem to be an available arn currently")
+  public void testCloudWatchLogsEvent() {
+    final MyCloudWatchRequestHandler myCloudWatchRequestHandler = new MyCloudWatchRequestHandler();
 
-  //    @Test // TODO we would like this but there doesn't seem to be an available arn currently
-  //    public void testCloudFrontEvent() {
-  //        final MyCloudFrontRequestHandler myCloudFrontRequestHandler = new
-  // MyCloudFrontRequestHandler();
-  //
-  //        final CloudFrontEvent cloudFrontEvent = new CloudFrontEvent();
-  //        final CloudFrontEvent.Record record = new CloudFrontEvent.Record();
-  //
-  //        myCloudFrontRequestHandler.handleRequest(cloudFrontEvent, createContext());
-  //        final MockSpan span = mockTracer.finishedSpans().get(0);
-  //        Assert.assertEquals("CloudFrontEventEventSourceARN",
-  // span.tags().get("aws.lambda.eventSource.arn"));
-  //    }
+    final CloudWatchLogsEvent cloudWatchLogsEvent = new CloudWatchLogsEvent();
+
+    myCloudWatchRequestHandler.handleRequest(cloudWatchLogsEvent, createContext());
+    final MockSpan span = mockTracer.finishedSpans().get(0);
+    Assert.assertEquals(
+        "CloudWatchLogsEventSourceARN", span.tags().get("aws.lambda.eventSource.arn"));
+  }
+
+  @Test
+  @Ignore("We would like this but there doesn't seem to be an available arn currently")
+  public void testCloudFrontEvent() {
+    final MyCloudFrontRequestHandler myCloudFrontRequestHandler = new MyCloudFrontRequestHandler();
+
+    final CloudFrontEvent cloudFrontEvent = new CloudFrontEvent();
+    final CloudFrontEvent.Record record = new CloudFrontEvent.Record();
+
+    myCloudFrontRequestHandler.handleRequest(cloudFrontEvent, createContext());
+    final MockSpan span = mockTracer.finishedSpans().get(0);
+    Assert.assertEquals(
+        "CloudFrontEventEventSourceARN", span.tags().get("aws.lambda.eventSource.arn"));
+  }
 
   static class MyRequestHandler implements TracingRequestHandler<String, String> {
 

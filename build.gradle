@@ -5,32 +5,47 @@ buildscript {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
+        maven {
+            url 'https://jcenter.bintray.com'
+        }
     }
     dependencies {
         classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.8"
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
     }
 }
-
 
 plugins {
     id 'java'
 }
+
 apply plugin: 'com.github.sherter.google-java-format'
+apply plugin: 'com.bmuschko.nexus'
+
+repositories {
+    mavenCentral()
+}
+
+project.configurations.configure {
+    "sonatype"() {
+        extendsFrom archives
+    }
+}
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
-    // TODO make this provided instead of compile?
     implementation 'com.amazonaws:aws-lambda-java-core:1.1.0'
-    implementation 'com.amazonaws:aws-lambda-java-events:2.2.2' // 2.2.2 is earliest version that has all needed event sources
+    // 2.2.2 is earliest version that has all needed event sources
+    implementation 'com.amazonaws:aws-lambda-java-events:2.2.2'
     implementation 'com.amazonaws:aws-java-sdk-s3:1.11.163'
     implementation 'com.amazonaws:aws-java-sdk-kinesis:1.11.163'
     implementation 'com.amazonaws:aws-java-sdk-dynamodb:1.11.163'
     implementation 'com.googlecode.json-simple:json-simple:1.1'
-    implementation('io.opentracing:opentracing-api:0.31.0') { transitive = false }
-    implementation('io.opentracing:opentracing-util:0.31.0') { transitive = false }
-    implementation('io.opentracing:opentracing-noop:0.31.0') { transitive = false }
+    implementation('io.opentracing:opentracing-api:0.31.0')
+    implementation('io.opentracing:opentracing-util:0.31.0')
+    implementation('io.opentracing:opentracing-noop:0.31.0')
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'io.opentracing:opentracing-mock:0.31.0'
@@ -38,12 +53,22 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'Implementation-Title': 'AWS Lambda OpenTracing Java SDK', 'Implementation-Version': '1.0.1'
+        attributes 'Implementation-Title': 'AWS Lambda OpenTracing Java SDK', 'Implementation-Version': project.version
     }
 }
 
-allprojects {
-    repositories {
-        mavenCentral()
+task uploadSonatype(type: Upload) {
+    configuration = configurations.sonatype
+    uploadDescriptor = true
+}
+
+nexus {
+    sign = true
+    configuration = "sonatype"
+}
+
+uploadSonatype.doFirst {
+    configuration.artifacts.each {
+        println(project.name + " uploading: " + it)
     }
 }
