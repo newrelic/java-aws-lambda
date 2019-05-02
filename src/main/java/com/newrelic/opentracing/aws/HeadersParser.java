@@ -13,7 +13,7 @@
  *
  */
 
-package io.opentracing.contrib.aws;
+package com.newrelic.opentracing.aws;
 
 import com.amazonaws.Request;
 import io.opentracing.SpanContext;

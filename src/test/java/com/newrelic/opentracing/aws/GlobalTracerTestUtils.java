@@ -12,9 +12,9 @@
  * limitations under the License.
  *
  */
+package com.newrelic.opentracing.aws;
 
-package io.opentracing;
-
+import io.opentracing.Tracer;
 import io.opentracing.util.GlobalTracer;
 import java.lang.reflect.Field;
 

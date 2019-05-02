@@ -64,7 +64,7 @@ dependencies {
 package com.handler.example;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import io.opentracing.contrib.aws.TracingRequestHandler;
+import com.newrelic.opentracing.aws.TracingRequestHandler;
 import io.opentracing.util.GlobalTracer;
 
 import java.util.Map;

@@ -13,13 +13,12 @@
  *
  */
 
-package io.opentracing.contrib.aws;
+package com.newrelic.opentracing.aws;
 
 import com.amazonaws.services.lambda.runtime.ClientContext;
 import com.amazonaws.services.lambda.runtime.CognitoIdentity;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
-import io.opentracing.GlobalTracerTestUtils;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import java.io.ByteArrayInputStream;

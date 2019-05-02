@@ -13,7 +13,7 @@
  *
  */
 
-package io.opentracing.contrib.aws;
+package com.newrelic.opentracing.aws;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import io.opentracing.Span;
