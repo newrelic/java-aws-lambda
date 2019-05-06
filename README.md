@@ -38,15 +38,15 @@ Exception log:
     - **Option B:** Add gradle or maven dependency to your project: [TODO N/A for Beta](https://mvnrepository.com)
 2. Implement the `TracingRequestHandler` interface as shown in the [example](#example-usage), defining the Lambda function input and output types that your function requires.
 3. Override the `doHandleRequest` method from the interface and execute your function logic within it. *Note:* If you are refactoring a pre-existing Lambda handler to take advantage of this SDK's tracing request handler make sure that it overrides `doHandleRequest` but not `handleRequest`.
-4. Register the OpenTracing Tracer of your choice.
+4. Register the OpenTracing Tracer of your choice (e.g. New Relic, Jaeger, etc).
 5. See Amazon's documentation on [creating a ZIP deployment package for a Java Lambda function](https://docs.aws.amazon.com/lambda/latest/dg/create-deployment-pkg-zip-java.html)
 6. When creating your Lambda function in AWS Lambda console the handler for the given example would be entered as `com.handler.example.MyLambdaHandler::handleRequest` or just `com.handler.example.MyLambdaHandler`, the latter of which will use `handleRequest` as the handler method by default. *Note:* `handleRequest` is used as the handler entry point as it will call `doHandleRequest`.
 
 ## Build the Project
 
-Run jar task: `./gradlew java-aws-lambda:jar`  
+Run jar task: `./gradlew jar`
 
-Artifact: `java-aws-lambda/java-aws-lambda/build/libs/java-aws-lambda.jar`
+Artifact: `java-aws-lambda/build/libs/java-aws-lambda.jar`
 
 ## Add Artifact to Gradle Project
 
