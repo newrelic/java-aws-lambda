@@ -33,9 +33,7 @@ Exception log:
 
 ## How to Use
 
-1. Add the `java-aws-lambda` dependency to your project.
-    - **Option A:** [Build the project from sources](#build-the-project) and [add the jar to your project as a Gradle dependency](#add-artifact-to-gradle-project)
-    - **Option B:** Add gradle or maven dependency to your project: [TODO N/A for Beta](https://mvnrepository.com)
+1. [Add the `java-aws-lambda` dependency to your Gradle project](#add-artifact-to-gradle-project)
 2. Implement the `TracingRequestHandler` interface as shown in the [example](#example-usage), defining the Lambda function input and output types that your function requires.
 3. Override the `doHandleRequest` method from the interface and execute your function logic within it. *Note:* If you are refactoring a pre-existing Lambda handler to take advantage of this SDK's tracing request handler make sure that it overrides `doHandleRequest` but not `handleRequest`.
 4. Register the OpenTracing Tracer of your choice (e.g. New Relic, Jaeger, etc).
@@ -54,7 +52,8 @@ Include the jar by adding it as a dependency in your `build.gradle` file:
 
 ```groovy
 dependencies {
-    compile files('/path/to/java-aws-lambda.jar')
+    // TODO verify this is correct when released
+    implementation "com.newrelic.opentracing.aws:java-aws-lambda:X.X.X"
 }
 ```
 
