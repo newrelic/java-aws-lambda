@@ -122,4 +122,4 @@ We'd love to get your contributions to improve AWS Lambda OpenTracing Java SDK! 
 ### Licensing
 The AWS Lambda OpenTracing Java SDK is licensed under the Apache 2.0 License.
 
-The AWS Lambda OpenTracing Java SDK also uses source code from third party libraries. Full details on which libraries are used and the terms under which they are licensed can be found in the third party notices document.
+The AWS Lambda OpenTracing Java SDK also uses source code from third party libraries. Full details on which libraries are used and the terms under which they are licensed can be found in the [third party notices document](THIRD_PARTY_NOTICES.md).

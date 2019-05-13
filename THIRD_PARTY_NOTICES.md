@@ -6,9 +6,9 @@ In the event that a required notice is missing or incorrect, please notify us ei
 For any licenses that require the disclosure of source code, the source code can be found at https://github.com/newrelic/java-aws-lambda.
 
 ## Content
-* AWS Lambda
-* AWS Java SDK
-* Open Tracing
+* [AWS Lambda](#aws-lambda)
+* [AWS Java SDK](#aws-java-sdk)
+* [Open Tracing](#open-tracing)
 
 ## AWS Lambda
 This product includes sources derived from AWS Lambda, distributed under the Apache License:
