@@ -115,7 +115,7 @@ Run the following gradle task:
 ```
 
 ### Contributing
-Full details are available in our [CONTRIBUTING.md](https://github.com/aws/aws-lambda-java-libs/blob/master/CONTRIBUTING.md) file.
+Full details are available in our [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 We'd love to get your contributions to improve AWS Lambda OpenTracing Java SDK! Keep in mind when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. If you'd like to execute our corporate CLA, or if you have any questions, please drop us an email at open-source@newrelic.com.
 

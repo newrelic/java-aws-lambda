@@ -13,7 +13,7 @@ Do you have questions or are you experiencing unexpected behaviors after modifyi
 
 ## Contributor License Agreement ("CLA")
 We'd love to get your contributions to improve AWS Lambda OpenTracing Java SDK! Keep in mind when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. You only have to sign the CLA one time per project.
-To execute our corporate CLA, which is required if your contribution is on behalf of a company, or if you have any questions, please drop us an email at [open-source@newrelic.com]. 
+To execute our corporate CLA, which is required if your contribution is on behalf of a company, or if you have any questions, please drop us an email at open-source@newrelic.com. 
 
 ## Filing Issues & Bug Reports
 We use GitHub issues to track public issues and bugs. If possible, please provide a link to an example app or gist that reproduces the issue. When filing an issue, please ensure your description is clear and includes the following information.
