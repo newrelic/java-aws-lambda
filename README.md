@@ -34,17 +34,10 @@ Below are a list of the collected exception attributes:
 ### How to Use
 
 #### Add Dependency
-You can either build the project locally as described below and then add the jar dependency into your gradle (or maven) file:
-```groovy
-dependencies {
-    compile files('/path/to/java-aws-lambda.jar')
-}
-```
-Or you can add the dependency like so:
+You can add the dependency by adding the following to your `build.gradle` file:
 ```
 dependencies {
-    // TODO verify this is correct when released
-    implementation "com.newrelic.opentracing.aws:java-aws-lambda:X.X.X"
+    compile "com.newrelic.opentracing.aws:java-aws-lambda:X.X.X"
 }
 ```
 
@@ -105,14 +98,14 @@ public class MyLambdaHandler implements TracingRequestHandler<Map<String, Object
 * Gradle
 
 ### Building
-Run the following gradle task: 
+Run the following command: 
 ```
-./gradlew java-aws-lambda:jar
+./gradlew jar
 ```  
 
 This generates a jar artifact in the following subdirectory:
 ```
-java-aws-lambda/java-aws-lambda/build/libs/java-aws-lambda.jar
+java-aws-lambda/build/libs/java-aws-lambda.jar
 ```
 
 ### Testing
