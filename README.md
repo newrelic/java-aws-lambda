@@ -6,7 +6,7 @@ Versioning will have the following format: {majorVersion}.{minorVersion}.{pointV
 
 ### How it Works
 
-The SDK provides [`TracingRequestHandler`](https://github.com/aws/aws-lambda-java-libs/blob/master/aws-lambda-java-core/src/main/java/com/amazonaws/services/lambda/runtime/RequestHandler.java) and [`TracingRequestStreamHandler`](https://github.com/aws/aws-lambda-java-libs/blob/master/aws-lambda-java-core/src/main/java/com/amazonaws/services/lambda/runtime/RequestStreamHandler.java) interfaces that extend AWS' Lambda request handlers. When a Lambda function that is using an implementation of either tracing request handler is invoked, the handler will obtain the globally registered OpenTracing [Tracer](https://opentracing.io/docs/overview/tracers/) and create/start an OpenTracing [Span](https://opentracing.io/docs/overview/spans/) to capture timing information and `key:value` pairs ([Tags/Logs](https://opentracing.io/docs/overview/tags-logs-baggage/)) detailing the trace data.
+The SDK provides `TracingRequestHandler` and `TracingRequestStreamHandler` interfaces that extend AWS' Lambda request handlers. When a Lambda function that is using an implementation of either tracing request handler is invoked, the handler will obtain the globally registered OpenTracing [Tracer](https://opentracing.io/docs/overview/tracers/) and create/start an OpenTracing [Span](https://opentracing.io/docs/overview/spans/) to capture timing information and `key:value` pairs ([Tags/Logs](https://opentracing.io/docs/overview/tags-logs-baggage/)) detailing the trace data.
 
 As part of the implementation the user must override the tracing handler's `doHandleRequest` method which is called by the handler interface's `handleRequest` method.
 
