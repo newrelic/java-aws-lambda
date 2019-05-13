@@ -51,7 +51,7 @@ dependencies {
 #### Implement
 1. Implement the `TracingRequestHandler` interface as shown in the [example](#example-usage), defining the Lambda function input and output types that your function requires.
 2. Override the `doHandleRequest` method from the interface and execute your function logic within it. *Note:* If you are refactoring a pre-existing Lambda handler to take advantage of this SDK's tracing request handler make sure that it overrides `doHandleRequest` but not `handleRequest`.
-3. Register the OpenTracing Tracer of your choice.
+3. Register the OpenTracing Tracer of your choice (e.g. New Relic, Jaeger, etc).
 4. See Amazon's documentation on [creating a ZIP deployment package for a Java Lambda function](https://docs.aws.amazon.com/lambda/latest/dg/create-deployment-pkg-zip-java.html)
 5. When creating your Lambda function in AWS Lambda console the handler for the given example would be entered as `com.handler.example.MyLambdaHandler::handleRequest` or just `com.handler.example.MyLambdaHandler`, the latter of which will use `handleRequest` as the handler method by default. *Note:* `handleRequest` is used as the handler entry point as it will call `doHandleRequest`.
 
@@ -74,7 +74,7 @@ import java.util.Map;
  */
 public class MyLambdaHandler implements TracingRequestHandler<Map<String, Object>, String> {
     static {
-        // TODO Obtain an instance of the OpenTracing Tracer of your choice
+        // Obtain an instance of the OpenTracing Tracer of your choice
         Tracer tracer = new CustomTracer(...);
         // Register your tracer as the Global Tracer
         GlobalTracer.register(tracer);
@@ -89,7 +89,7 @@ public class MyLambdaHandler implements TracingRequestHandler<Map<String, Object
      */
     @Override
     public String doHandleRequest(Map<String, Object> input, Context context) {
-        // TODO Your function logic here
+        // Your function logic here
         return "Lambda Function output";
     }
 }
@@ -122,7 +122,7 @@ Run the following gradle task:
 ```
 
 ### Contributing
-Full details are available in our CONTRIBUTING file;
+Full details are available in our [CONTRIBUTING.md](https://github.com/aws/aws-lambda-java-libs/blob/master/CONTRIBUTING.md) file.
 
 We'd love to get your contributions to improve AWS Lambda OpenTracing Java SDK! Keep in mind when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. If you'd like to execute our corporate CLA, or if you have any questions, please drop us an email at open-source@newrelic.com.
 
