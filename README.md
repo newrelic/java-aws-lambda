@@ -88,7 +88,6 @@ public class MyLambdaHandler implements TracingRequestHandler<Map<String, Object
 }
 ```
 
-
 ## Getting Started
 
 ### Requirements
