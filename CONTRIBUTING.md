@@ -42,4 +42,4 @@ Minimally, the [test suite](#testing-guidelines) must pass for us to accept a PR
 The AWS Lambda OpenTracing Java SDK comes with tests in `src/test` that can be run with `./gradlew test`.
 
 ## License
-By contributing to AWS Lambda OpenTracing Java SDK, you agree that your contributions will be licensed under the [Apache License](http://www.apache.org/licenses/LICENSE-2.0). in the root directory of this source tree.
+By contributing to AWS Lambda OpenTracing Java SDK, you agree that your contributions will be licensed under the [License file](LICENSE) in the root directory of this source tree.
