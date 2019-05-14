@@ -102,3 +102,34 @@ uploadSonatype.doFirst {
         println(project.name + " uploading: " + it)
     }
 }
+
+def customizePom(pom, nameIn, descriptionIn) {
+    pom.project {
+        url 'https://newrelic.com/'
+        name nameIn
+        description descriptionIn
+
+        licenses {
+            license { url 'https://github.com/newrelic/java-aws-lambda/blob/master/LICENSE' }
+        }
+
+        scm {
+            url "git@github.com:newrelic/java-aws-lambda.git"
+            connection "scm:git:git@github.com:newrelic/java-aws-lambda.git"
+        }
+
+        developers {
+            developer {
+                id 'newrelic'
+                name 'New Relic'
+                email 'support@newrelic.com'
+            }
+        }
+    }
+}
+
+// For external deploys (e.g. - release)
+modifyPom { pom ->
+    customizePom(pom, 'AWS Lambda OpenTracing Java SDK',
+            'OpenTracing Java SDK for instrumenting AWS Lambda functions.')
+}
