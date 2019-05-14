@@ -110,7 +110,7 @@ def customizePom(pom, nameIn, descriptionIn) {
         description descriptionIn
 
         licenses {
-            license { url 'https://newrelic.com/docs/java/java-agent-license' }
+            license { url 'https://github.com/newrelic/java-aws-lambda/blob/master/LICENSE' }
         }
 
         scm {
