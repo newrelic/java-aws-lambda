@@ -52,14 +52,44 @@ dependencies {
 }
 
 jar {
+    from(projectDir) { include "README.md" }
+
     manifest {
-        attributes 'Implementation-Title': 'AWS Lambda OpenTracing Java SDK', 'Implementation-Version': project.version
+        attributes 'Implementation-Title': 'AWS Lambda OpenTracing Java SDK',
+                'Implementation-Version': project.version,
+                'Created-By': 'New Relic, Inc',
+                'Built-Date': new Date(),
+                'Specification-Version': project.version,
+                'Build-Id': System.getProperty('BUILD_ID') || "None"
     }
 }
 
 task uploadSonatype(type: Upload) {
     configuration = configurations.sonatype
     uploadDescriptor = true
+}
+
+task customSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from(projectDir) { include "README.md" }
+    from(sourceSets.main.allSource) 
+
+    manifest {
+        attributes 'Implementation-Title': 'AWS Lambda OpenTracing Java SDK Sources',
+                'Implementation-Version': project.version,
+                'Created-By': 'New Relic, Inc',
+                'Built-Date': new Date(),
+                'Specification-Version': project.version,
+                'Build-Id': System.getProperty('BUILD_ID') || "None"
+    }
+}
+
+artifacts {
+    archives customSourcesJar
+}
+
+extraArchive {
+    sources = false
 }
 
 nexus {
