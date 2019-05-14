@@ -32,7 +32,7 @@ This Open Source Software can be used in a large number of environments, all of 
 If you can build the AWS Lambda OpenTracing Java SDK, you can develop it!
 
 ## Pull Request Guidelines
-Before we can accept a pull request, you must sign our [Contributor Licensing Agreement](#contributor-license-agreement-cla), if you have not already done so. This grants us the right to use your code under the same Apache 2.0 license as we use for the C SDK in general.
+Before we can accept a pull request, you must sign our [Contributor Licensing Agreement](#contributor-license-agreement-cla), if you have not already done so. This grants us the right to use your code under the same Apache 2.0 license as we use for this project in general.
 
 Minimally, the [test suite](#testing-guidelines) must pass for us to accept a PR. Ideally, we would love it if you also added appropriate tests if you're implementing a feature!
 
