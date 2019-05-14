@@ -11,7 +11,7 @@ For any licenses that require the disclosure of source code, the source code can
 * [Open Tracing](#open-tracing)
 
 ## AWS Lambda
-This product includes sources derived from AWS Lambda, distributed under the Apache License:
+This product includes sources derived from [AWS Lambda](https://github.com/aws/aws-lambda-java-libs), distributed under the [Apache License](https://github.com/aws/aws-lambda-java-libs/blob/master/LICENSE):
 ```
                                  Apache License
                            Version 2.0, January 2004
@@ -217,7 +217,7 @@ This product includes sources derived from AWS Lambda, distributed under the Apa
 ```
 
 ## AWS Java SDK
-This product includes sources derived from AWS Java SDK, distributed under the Apache License:
+This product includes sources derived from [AWS Java SDK](https://github.com/aws/aws-sdk-java), distributed under the [Apache License](https://github.com/aws/aws-sdk-java/blob/master/LICENSE.txt):
 
 ```
 Apache License
@@ -276,7 +276,7 @@ Note: Other license terms may apply to certain, identified software files contai
 ```
 
 ## Open Tracing
-This product includes sources derived from Open Tracing, distributed under the Apache License:
+This product includes sources derived from [Open Tracing](https://github.com/opentracing/opentracing-java), distributed under the [Apache License](https://github.com/opentracing/opentracing-java/blob/master/LICENSE):
 
 ```
                                  Apache License
