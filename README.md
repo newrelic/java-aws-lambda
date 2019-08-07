@@ -70,7 +70,7 @@ public class MyLambdaHandler implements TracingRequestHandler<Map<String, Object
         // Obtain an instance of the OpenTracing Tracer of your choice
         Tracer tracer = new CustomTracer(...);
         // Register your tracer as the Global Tracer
-        GlobalTracer.register(tracer);
+        GlobalTracer.registerIfAbsent(tracer);
     }
 
     /**
