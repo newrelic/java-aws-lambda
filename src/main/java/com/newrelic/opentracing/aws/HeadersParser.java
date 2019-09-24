@@ -41,7 +41,8 @@ final class HeadersParser {
           final Object headers = map.get("headers");
           if (headers instanceof Map) {
             final Map<String, String> headerStr = (Map<String, String>) headers;
-            return tracer.extract(Format.Builtin.HTTP_HEADERS, new TextMapExtractAdapter(headerStr));
+            return tracer.extract(
+                Format.Builtin.HTTP_HEADERS, new TextMapExtractAdapter(headerStr));
           }
         }
       } else if (input instanceof com.amazonaws.Request) {
