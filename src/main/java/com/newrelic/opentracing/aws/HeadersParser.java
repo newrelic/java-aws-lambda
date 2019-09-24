@@ -31,9 +31,10 @@ final class HeadersParser {
       if (input instanceof Map) {
         Map map = (Map) input;
         /*
-         * New Relic distributed tracing headers can be directly passed as Input to an AWS Lambda function
-         * as a Map with "newrelic" as the key and the distributed tracing payload String as the value or as
-         * a Map of headers.
+         * New Relic distributed tracing headers can be directly passed as Input to an AWS Lambda function via the
+         * com.amazonaws.services.lambda.model.InvokeRequest#withPayload method as a String.
+         *
+         * Alternatively, a Map of propagated headers containing the "newrelic" distributed tracing payload can be parsed.
          */
         if (map.get("newrelic") != null) {
           return tracer.extract(Format.Builtin.HTTP_HEADERS, new TextMapExtractAdapter(map));
