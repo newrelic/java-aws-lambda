@@ -30,10 +30,19 @@ final class HeadersParser {
     try {
       if (input instanceof Map) {
         Map map = (Map) input;
-        final Object headers = map.get("headers");
-        if (headers instanceof Map) {
-          final Map<String, String> headerStr = (Map<String, String>) headers;
-          return tracer.extract(Format.Builtin.HTTP_HEADERS, new TextMapExtractAdapter(headerStr));
+        /*
+         * New Relic distributed tracing headers can be directly passed as Input to an AWS Lambda function
+         * as a Map with "newrelic" as the key and the distributed tracing payload String as the value or as
+         * a Map of headers.
+         */
+        if (map.get("newrelic") != null) {
+          return tracer.extract(Format.Builtin.HTTP_HEADERS, new TextMapExtractAdapter(map));
+        } else {
+          final Object headers = map.get("headers");
+          if (headers instanceof Map) {
+            final Map<String, String> headerStr = (Map<String, String>) headers;
+            return tracer.extract(Format.Builtin.HTTP_HEADERS, new TextMapExtractAdapter(headerStr));
+          }
         }
       } else if (input instanceof com.amazonaws.Request) {
         final Request request = (Request) input;
