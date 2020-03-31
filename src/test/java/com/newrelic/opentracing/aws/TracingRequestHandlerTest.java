@@ -10,6 +10,7 @@ import com.amazonaws.services.lambda.runtime.CognitoIdentity;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.CloudFrontEvent;
 import com.amazonaws.services.lambda.runtime.events.CloudWatchLogsEvent;
 import com.amazonaws.services.lambda.runtime.events.CodeCommitEvent;
@@ -254,6 +255,27 @@ public class TracingRequestHandlerTest {
   }
 
   @Test
+  public void testAPIGatewayV2ProxyRequestEvent() {
+    final MyApiGatewayV2ProxyRequestHandler myApiGatewayV2ProxyRequestHandler =
+        new MyApiGatewayV2ProxyRequestHandler();
+
+    final APIGatewayV2ProxyRequestEvent apiGatewayV2ProxyRequestEvent =
+        new APIGatewayV2ProxyRequestEvent();
+    final APIGatewayV2ProxyRequestEvent.RequestIdentity requestIdentity =
+        new APIGatewayV2ProxyRequestEvent.RequestIdentity();
+    requestIdentity.setUserArn("APIGatewayV2ProxyRequestEventUserARN");
+    final APIGatewayV2ProxyRequestEvent.RequestContext proxyRequestContext =
+        new APIGatewayV2ProxyRequestEvent.RequestContext();
+    proxyRequestContext.setIdentity(requestIdentity);
+    apiGatewayV2ProxyRequestEvent.setRequestContext(proxyRequestContext);
+
+    myApiGatewayV2ProxyRequestHandler.handleRequest(apiGatewayV2ProxyRequestEvent, createContext());
+    final MockSpan span = mockTracer.finishedSpans().get(0);
+    Assert.assertEquals(
+        "APIGatewayV2ProxyRequestEventUserARN", span.tags().get("aws.lambda.eventSource.arn"));
+  }
+
+  @Test
   @Ignore("We would like this but there doesn't seem to be an available arn currently")
   public void testCloudWatchLogsEvent() {
     final MyCloudWatchRequestHandler myCloudWatchRequestHandler = new MyCloudWatchRequestHandler();
@@ -369,6 +391,16 @@ public class TracingRequestHandlerTest {
     @Override
     public Object doHandleRequest(
         APIGatewayProxyRequestEvent apiGatewayProxyRequestEvent, Context context) {
+      return "null";
+    }
+  }
+
+  static class MyApiGatewayV2ProxyRequestHandler
+      implements TracingRequestHandler<APIGatewayV2ProxyRequestEvent, Object> {
+
+    @Override
+    public Object doHandleRequest(
+        APIGatewayV2ProxyRequestEvent apiGatewayV2ProxyRequestEvent, Context context) {
       return "null";
     }
   }
