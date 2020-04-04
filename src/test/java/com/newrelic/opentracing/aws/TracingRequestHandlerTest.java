@@ -10,7 +10,9 @@ import com.amazonaws.services.lambda.runtime.CognitoIdentity;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyResponseEvent;
 import com.amazonaws.services.lambda.runtime.events.CloudFrontEvent;
 import com.amazonaws.services.lambda.runtime.events.CloudWatchLogsEvent;
 import com.amazonaws.services.lambda.runtime.events.CodeCommitEvent;
@@ -255,6 +257,29 @@ public class TracingRequestHandlerTest {
   }
 
   @Test
+  public void testAPIGatewayProxyRequestResponseEvent() {
+    int expectedStatusCode = 200;
+    final MyApiGatewayProxyRequestResponseHandler myApiGatewayProxyRequestHandler =
+        new MyApiGatewayProxyRequestResponseHandler(expectedStatusCode);
+
+    final APIGatewayProxyRequestEvent apiGatewayProxyRequestEvent =
+        new APIGatewayProxyRequestEvent();
+    final APIGatewayProxyRequestEvent.RequestIdentity requestIdentity =
+        new APIGatewayProxyRequestEvent.RequestIdentity();
+    requestIdentity.setUserArn("APIGatewayProxyRequestEventUserARN");
+    final APIGatewayProxyRequestEvent.ProxyRequestContext proxyRequestContext =
+        new APIGatewayProxyRequestEvent.ProxyRequestContext();
+    proxyRequestContext.setIdentity(requestIdentity);
+    apiGatewayProxyRequestEvent.setRequestContext(proxyRequestContext);
+
+    myApiGatewayProxyRequestHandler.handleRequest(apiGatewayProxyRequestEvent, createContext());
+    final MockSpan span = mockTracer.finishedSpans().get(0);
+    Assert.assertEquals(
+        "APIGatewayProxyRequestEventUserARN", span.tags().get("aws.lambda.eventSource.arn"));
+    Assert.assertEquals(Integer.toString(expectedStatusCode), span.tags().get("http.status_code"));
+  }
+
+  @Test
   public void testAPIGatewayV2ProxyRequestEvent() {
     final MyApiGatewayV2ProxyRequestHandler myApiGatewayV2ProxyRequestHandler =
         new MyApiGatewayV2ProxyRequestHandler();
@@ -273,6 +298,30 @@ public class TracingRequestHandlerTest {
     final MockSpan span = mockTracer.finishedSpans().get(0);
     Assert.assertEquals(
         "APIGatewayV2ProxyRequestEventUserARN", span.tags().get("aws.lambda.eventSource.arn"));
+    Assert.assertFalse(span.tags().containsKey("http.status_code"));
+  }
+
+  @Test
+  public void testAPIGatewayV2ProxyRequestResponseEvent() {
+    int expectedStatusCode = 200;
+    final MyApiGatewayV2ProxyRequestResponseHandler myApiGatewayV2ProxyRequestHandler =
+        new MyApiGatewayV2ProxyRequestResponseHandler(expectedStatusCode);
+
+    final APIGatewayV2ProxyRequestEvent apiGatewayV2ProxyRequestEvent =
+        new APIGatewayV2ProxyRequestEvent();
+    final APIGatewayV2ProxyRequestEvent.RequestIdentity requestIdentity =
+        new APIGatewayV2ProxyRequestEvent.RequestIdentity();
+    requestIdentity.setUserArn("APIGatewayV2ProxyRequestEventUserARN");
+    final APIGatewayV2ProxyRequestEvent.RequestContext proxyRequestContext =
+        new APIGatewayV2ProxyRequestEvent.RequestContext();
+    proxyRequestContext.setIdentity(requestIdentity);
+    apiGatewayV2ProxyRequestEvent.setRequestContext(proxyRequestContext);
+
+    myApiGatewayV2ProxyRequestHandler.handleRequest(apiGatewayV2ProxyRequestEvent, createContext());
+    final MockSpan span = mockTracer.finishedSpans().get(0);
+    Assert.assertEquals(
+        "APIGatewayV2ProxyRequestEventUserARN", span.tags().get("aws.lambda.eventSource.arn"));
+    Assert.assertEquals(Integer.toString(expectedStatusCode), span.tags().get("http.status_code"));
   }
 
   @Test
@@ -395,6 +444,25 @@ public class TracingRequestHandlerTest {
     }
   }
 
+  static class MyApiGatewayProxyRequestResponseHandler
+      implements TracingRequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+
+    private int statusCode;
+
+    public MyApiGatewayProxyRequestResponseHandler(int statusCode) {
+      this.statusCode = statusCode;
+    }
+
+    @Override
+    public APIGatewayProxyResponseEvent doHandleRequest(
+        APIGatewayProxyRequestEvent apiGatewayV2ProxyRequestEvent, Context context) {
+      APIGatewayProxyResponseEvent responseEvent = new APIGatewayProxyResponseEvent();
+      responseEvent.setStatusCode(statusCode);
+      responseEvent.setBody("null");
+      return responseEvent;
+    }
+  }
+
   static class MyApiGatewayV2ProxyRequestHandler
       implements TracingRequestHandler<APIGatewayV2ProxyRequestEvent, Object> {
 
@@ -402,6 +470,26 @@ public class TracingRequestHandlerTest {
     public Object doHandleRequest(
         APIGatewayV2ProxyRequestEvent apiGatewayV2ProxyRequestEvent, Context context) {
       return "null";
+    }
+  }
+
+  static class MyApiGatewayV2ProxyRequestResponseHandler
+      implements TracingRequestHandler<
+          APIGatewayV2ProxyRequestEvent, APIGatewayV2ProxyResponseEvent> {
+
+    private int statusCode;
+
+    public MyApiGatewayV2ProxyRequestResponseHandler(int statusCode) {
+      this.statusCode = statusCode;
+    }
+
+    @Override
+    public APIGatewayV2ProxyResponseEvent doHandleRequest(
+        APIGatewayV2ProxyRequestEvent apiGatewayV2ProxyRequestEvent, Context context) {
+      APIGatewayV2ProxyResponseEvent responseEvent = new APIGatewayV2ProxyResponseEvent();
+      responseEvent.setStatusCode(statusCode);
+      responseEvent.setBody("null");
+      return responseEvent;
     }
   }
 
