@@ -6,6 +6,7 @@
 package com.newrelic.opentracing.aws;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.CodeCommitEvent;
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
 import com.amazonaws.services.lambda.runtime.events.KinesisEvent;
@@ -49,6 +50,8 @@ final class EventSourceParser {
       return parseCodeCommitEventSourceArn(object);
     } else if (object instanceof APIGatewayProxyRequestEvent) {
       return parseAPIGatewayProxyRequestEventUserArn(object);
+    } else if (object instanceof APIGatewayV2ProxyRequestEvent) {
+      return parseAPIGatewayV2ProxyRequestEventUserArn(object);
     }
     return null;
   }
@@ -215,6 +218,24 @@ final class EventSourceParser {
     }
 
     final APIGatewayProxyRequestEvent.RequestIdentity identity = requestContext.getIdentity();
+    if (identity == null) {
+      return null;
+    }
+
+    return identity.getUserArn();
+  }
+
+  private static String parseAPIGatewayV2ProxyRequestEventUserArn(Object object) {
+    APIGatewayV2ProxyRequestEvent apiGatewayV2ProxyRequestEvent =
+        (APIGatewayV2ProxyRequestEvent) object;
+
+    APIGatewayV2ProxyRequestEvent.RequestContext requestContext =
+        apiGatewayV2ProxyRequestEvent.getRequestContext();
+    if (requestContext == null) {
+      return null;
+    }
+
+    APIGatewayV2ProxyRequestEvent.RequestIdentity identity = requestContext.getIdentity();
     if (identity == null) {
       return null;
     }

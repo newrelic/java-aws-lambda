@@ -6,6 +6,7 @@
 package com.newrelic.opentracing.aws;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyResponseEvent;
 import io.opentracing.Span;
 import java.util.Map;
 
@@ -33,6 +34,12 @@ public class ResponseParser {
           (APIGatewayProxyResponseEvent) response;
       if (response != null) {
         statusCode = apiGatewayProxyResponseEvent.getStatusCode() + "";
+      }
+    } else if (response instanceof APIGatewayV2ProxyResponseEvent) {
+      final APIGatewayV2ProxyResponseEvent apiGatewayV2ProxyResponseEvent =
+          (APIGatewayV2ProxyResponseEvent) response;
+      if (response != null) {
+        statusCode = apiGatewayV2ProxyResponseEvent.getStatusCode() + "";
       }
     }
 
