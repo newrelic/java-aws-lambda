@@ -6,29 +6,29 @@
 package com.newrelic.opentracing.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import io.opentracing.Scope;
+import io.opentracing.Span;
+import io.opentracing.SpanContext;
+import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SpanUtil {
 
   private SpanUtil() {}
 
-  public static <Input> void setTags(
-      Scope scope, Context context, Input input, AtomicBoolean isColdStart) {
-    scope.span().setTag("aws.requestId", context.getAwsRequestId());
-    scope.span().setTag("aws.lambda.arn", context.getInvokedFunctionArn());
-
-    final String sourceArn = EventSourceParser.parseEventSourceArn(input);
-    if (sourceArn != null) {
-      scope.span().setTag("aws.lambda.eventSource.arn", sourceArn);
-    }
-
-    if (isColdStart.getAndSet(false)) {
-      scope.span().setTag("aws.lambda.coldStart", true);
-    }
+  static <Input> Span buildSpan(
+      Input input, Context context, Tracer tracer, SpanContext spanContext) {
+    return EnhancedSpanBuilder.basedOn(tracer, "handleRequest")
+        .asChildOf(spanContext)
+        .withTag("aws.requestId", context.getAwsRequestId())
+        .withTag("aws.lambda.arn", context.getInvokedFunctionArn())
+        .optionallyWithTag(
+            "aws.lambda.eventSource.arn", EventSourceParser.parseEventSourceArn(input))
+        .optionallyWithTag(
+            "aws.lambda.coldStart", TracingRequestHandler.isColdStart.getAndSet(false))
+        .start();
   }
 
   public static Map<String, Object> createErrorAttributes(Throwable throwable) {
@@ -38,6 +38,6 @@ public class SpanUtil {
     errorAttributes.put("message", throwable.getMessage());
     errorAttributes.put("stack", throwable.getStackTrace());
     errorAttributes.put("error.kind", "Exception");
-    return errorAttributes;
+    return Collections.unmodifiableMap(errorAttributes);
   }
 }
