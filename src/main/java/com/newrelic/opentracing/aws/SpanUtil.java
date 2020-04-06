@@ -13,21 +13,25 @@ import io.opentracing.tag.Tags;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SpanUtil {
 
   private SpanUtil() {}
 
   static <Input> Span buildSpan(
-      Input input, Context context, Tracer tracer, SpanContext spanContext) {
+      Input input,
+      Context context,
+      Tracer tracer,
+      SpanContext spanContext,
+      AtomicBoolean isColdStart) {
     return EnhancedSpanBuilder.basedOn(tracer, "handleRequest")
         .asChildOf(spanContext)
         .withTag("aws.requestId", context.getAwsRequestId())
         .withTag("aws.lambda.arn", context.getInvokedFunctionArn())
         .optionallyWithTag(
             "aws.lambda.eventSource.arn", EventSourceParser.parseEventSourceArn(input))
-        .optionallyWithTag(
-            "aws.lambda.coldStart", TracingRequestHandler.isColdStart.getAndSet(false))
+        .optionallyWithTag("aws.lambda.coldStart", isColdStart.getAndSet(false))
         .start();
   }
 

@@ -42,7 +42,7 @@ public interface TracingRequestStreamHandler
     final Tracer tracer = GlobalTracer.get();
     final SpanContext spanContext = extractContext(tracer, input);
 
-    Span span = SpanUtil.buildSpan(input, context, tracer, spanContext);
+    Span span = SpanUtil.buildSpan(input, context, tracer, spanContext, isColdStart);
     try (Scope scope = tracer.activateSpan(span)) {
       try {
         doHandleRequest(input, output, context);
