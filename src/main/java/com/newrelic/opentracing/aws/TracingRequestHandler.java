@@ -7,6 +7,7 @@ package com.newrelic.opentracing.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import io.opentracing.Scope;
+import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
@@ -42,16 +43,18 @@ public interface TracingRequestHandler<Input, Output>
     final Tracer tracer = GlobalTracer.get();
     final SpanContext spanContext = extractContext(tracer, input);
 
-    try (Scope scope = tracer.buildSpan("handleRequest").asChildOf(spanContext).startActive(true)) {
-      SpanUtil.setTags(scope, context, input, isColdStart);
+    Span span = SpanUtil.buildSpan(input, context, tracer, spanContext, isColdStart);
+    try (Scope scope = tracer.activateSpan(span)) {
       try {
         Output output = doHandleRequest(input, context);
-        ResponseParser.parseResponse(output, scope.span());
+        ResponseParser.parseResponse(output, span);
         return output;
       } catch (Throwable throwable) {
-        scope.span().log(SpanUtil.createErrorAttributes(throwable));
+        span.log(SpanUtil.createErrorAttributes(throwable));
         throw throwable;
       }
+    } finally {
+      span.finish();
     }
   }
 
