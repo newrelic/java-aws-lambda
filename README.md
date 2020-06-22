@@ -4,6 +4,11 @@ This SDK provides Open Tracing instrumentation for AWS Lambda. Releases for this
 
 Versioning will have the following format: {majorVersion}.{minorVersion}.{pointVersion} 
 
+### Supported OpenTracing Versions
+
+* OpenTracing 0.31.0: [com.newrelic.opentracing:java-aws-lambda:1.0.0](https://mvnrepository.com/artifact/com.newrelic.opentracing/java-aws-lambda/1.0.0)
+* OpenTracing 0.33.0: [com.newrelic.opentracing:java-aws-lambda:2.0.0](https://mvnrepository.com/artifact/com.newrelic.opentracing/java-aws-lambda/2.0.0)
+
 ### How it Works
 
 The SDK provides `TracingRequestHandler` and `TracingRequestStreamHandler` interfaces that extend AWS' Lambda request handlers. When a Lambda function that is using an implementation of either tracing request handler is invoked, the handler will obtain the globally registered OpenTracing [Tracer](https://opentracing.io/docs/overview/tracers/) and create/start an OpenTracing [Span](https://opentracing.io/docs/overview/spans/) to capture timing information and `key:value` pairs ([Tags/Logs](https://opentracing.io/docs/overview/tags-logs-baggage/)) detailing the trace data.
@@ -37,7 +42,7 @@ Below are a list of the collected exception attributes:
 You can add the dependency by adding the following to your `build.gradle` file:
 ```
 dependencies {
-    compile "com.newrelic.opentracing:java-aws-lambda:1.0.0"
+    compile "com.newrelic.opentracing:java-aws-lambda:2.0.0"
 }
 ```
 
