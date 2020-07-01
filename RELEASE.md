@@ -1,7 +1,7 @@
 # AWS Lambda OpenTracing Java SDK Release Process
 
 ## Release
-1. Run the [ReleaseLambdaSDK](https://javaagent-build.pdx.vm.datanerd.us/view/Java%20Agent/job/ReleaseLambdaSDK/) jenkins job by selecting `Build with Parameters`, specifying the release version, and selecting `Build`. This job will handle the following tasks: 
+1. Run the ReleaseLambdaSDK jenkins job by selecting `Build with Parameters`, specifying the release version, and selecting `Build`. This job will handle the following tasks:
    * Run all tests
    * Build artifacts
    * Upload versioned artifacts to sonatype
