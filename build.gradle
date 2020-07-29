@@ -11,24 +11,21 @@ buildscript {
     }
     dependencies {
         classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.8"
-        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
     }
 }
 
 plugins {
     id 'java'
+    id 'maven-publish'
+    id 'signing'
 }
 
 apply plugin: 'com.github.sherter.google-java-format'
-apply plugin: 'com.bmuschko.nexus'
 
 repositories {
     mavenCentral()
-}
-
-project.configurations.configure {
-    "sonatype"() {
-        extendsFrom archives
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
     }
 }
 
@@ -64,72 +61,60 @@ jar {
     }
 }
 
-task uploadSonatype(type: Upload) {
-    configuration = configurations.sonatype
-    uploadDescriptor = true
-}
-
-task customSourcesJar(type: Jar) {
-    classifier = 'sources'
-    from(projectDir) { include "README.md" }
-    from(sourceSets.main.allSource) 
-
-    manifest {
-        attributes 'Implementation-Title': 'AWS Lambda OpenTracing Java SDK Sources',
-                'Implementation-Version': project.version,
-                'Created-By': 'New Relic, Inc',
-                'Built-Date': new Date(),
-                'Specification-Version': project.version,
-                'Build-Id': System.getProperty('BUILD_ID') || "None"
-    }
-}
-
-artifacts {
-    archives customSourcesJar
-}
-
-extraArchive {
-    sources = false
-}
-
-nexus {
-    sign = true
-    configuration = "sonatype"
-}
-
-uploadSonatype.doFirst {
-    configuration.artifacts.each {
-        println(project.name + " uploading: " + it)
-    }
-}
-
-def customizePom(pom, nameIn, descriptionIn) {
-    pom.project {
-        url 'https://newrelic.com/'
-        name nameIn
-        description descriptionIn
-
-        licenses {
-            license { url 'https://github.com/newrelic/java-aws-lambda/blob/master/LICENSE' }
+publishing {
+    repositories {
+        maven {
+            def releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            def snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+            if (version.toString().endsWith("SNAPSHOT")) {
+                url = snapshotsRepoUrl
+            } else {
+                url = releasesRepoUrl
+            }
+            credentials {
+                username = System.getenv("SONATYPE_USERNAME")
+                password = System.getenv("SONATYPE_PASSWORD")
+            }
         }
-
-        scm {
-            url "git@github.com:newrelic/java-aws-lambda.git"
-            connection "scm:git:git@github.com:newrelic/java-aws-lambda.git"
+    }
+    publications {
+        register("mavenJava", MavenPublication.class) {
+            from(components["java"])
         }
-
-        developers {
-            developer {
-                id 'newrelic'
-                name 'New Relic'
-                email 'support@newrelic.com'
+        // customize all publications here
+        withType(MavenPublication.class) {
+            pom {
+                name.set(project.name)
+                description.set("SDK that provides open tracing instrumentation for AWS Lambda")
+                url.set("https://github.com/newrelic/java-aws-lambda")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        distribution.set("repo")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("newrelic")
+                        name.set("New Relic")
+                        email.set("opensource@newrelic.com")
+                    }
+                }
+                scm {
+                    url.set("git@github.com:newrelic/java-aws-lambda.git")
+                    connection.set("scm:git@github.com:newrelic/java-aws-lambda.git")
+                }
             }
         }
     }
 }
 
-// For external deploys (e.g. - release)
-modifyPom { pom ->
-    customizePom(pom, 'AWS Lambda OpenTracing Java SDK',
-            'OpenTracing Java SDK for instrumenting AWS Lambda functions.')
+signing {
+    def signingKeyId = findProperty("signingKeyId")
+    def signingKey = findProperty("signingKey")
+    def signingPassword = findProperty("signingPassword")
+    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+    setRequired({ gradle.taskGraph.hasTask("uploadArchives") })
+    sign publishing.publications["mavenJava"]
 }

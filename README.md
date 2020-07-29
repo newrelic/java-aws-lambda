@@ -112,6 +112,13 @@ This generates a jar artifact in the following subdirectory:
 java-aws-lambda/build/libs/java-aws-lambda.jar
 ```
 
+#### Publishing to maven local
+If you'd like to publish a version of this project to your
+local maven repository run the following command:
+```
+./gradlew publishToMavenLocal
+```
+
 ### Testing
 Run the following gradle task: 
 ```
