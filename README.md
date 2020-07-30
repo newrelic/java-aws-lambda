@@ -11,9 +11,15 @@ Versioning will have the following format: {majorVersion}.{minorVersion}.{pointV
 
 ### How it Works
 
-The SDK provides `TracingRequestHandler` and `TracingRequestStreamHandler` interfaces that extend AWS' Lambda request handlers. When a Lambda function that is using an implementation of either tracing request handler is invoked, the handler will obtain the globally registered OpenTracing [Tracer](https://opentracing.io/docs/overview/tracers/) and create/start an OpenTracing [Span](https://opentracing.io/docs/overview/spans/) to capture timing information and `key:value` pairs ([Tags/Logs](https://opentracing.io/docs/overview/tags-logs-baggage/)) detailing the trace data.
+The SDK provides `LambdaTracing` and `StreamLambdaTracing` classes that instrument requests. When a Lambda function 
+that is using an implementation of either class is invoked, the handler will obtain the globally registered OpenTracing 
+[Tracer](https://opentracing.io/docs/overview/tracers/) and create/start an OpenTracing 
+[Span](https://opentracing.io/docs/overview/spans/) to capture timing information and `key:value` pairs 
+([Tags/Logs](https://opentracing.io/docs/overview/tags-logs-baggage/)) detailing the trace data.
 
-As part of the implementation the user must override the tracing handler's `doHandleRequest` method which is called by the handler interface's `handleRequest` method.
+As part of the implementation the user's handler must call the `instrument` method, passing a callback that contains 
+the business logic for their handler.
+
 
 ### Collected Span Tags/Logs
 
@@ -42,7 +48,7 @@ Below are a list of the collected exception attributes:
 You can add the dependency by adding the following to your `build.gradle` file:
 ```
 dependencies {
-    compile "com.newrelic.opentracing:java-aws-lambda:2.0.0"
+    implementation "com.newrelic.opentracing:java-aws-lambda:2.1.0"
 }
 ```
 
@@ -59,36 +65,29 @@ dependencies {
 package com.handler.example;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.newrelic.opentracing.aws.TracingRequestHandler;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import com.newrelic.opentracing.LambdaTracer;
+import com.newrelic.opentracing.aws.LambdaTracing;
 import io.opentracing.util.GlobalTracer;
 
 import java.util.Map;
 
-/**
- * Tracing request handler that creates a span on every invocation of a Lambda.
- *
- * @param Map<String, Object> The Lambda Function input
- * @param String The Lambda Function output
- */
-public class MyLambdaHandler implements TracingRequestHandler<Map<String, Object>, String> {
+public static class YourLambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
     static {
         // Obtain an instance of the OpenTracing Tracer of your choice
-        Tracer tracer = new CustomTracer(...);
+        Tracer tracer = LambdaTracer.INSTANCE;
         // Register your tracer as the Global Tracer
         GlobalTracer.registerIfAbsent(tracer);
     }
-
-    /**
-     * Method that handles the Lambda function request.
-     *
-     * @param input The Lambda Function input
-     * @param context The Lambda execution environment context object
-     * @return String The Lambda Function output
-     */
+ 
     @Override
-    public String doHandleRequest(Map<String, Object> input, Context context) {
-        // Your function logic here
-        return "Lambda Function output";
+    public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent apiGatewayProxyRequestEvent, Context context) {
+        return LambdaTracing.instrument(apiGatewayProxyRequestEvent, context, (event, ctx) -> {
+            // Your business logic here
+            return doSomethingWithTheEvent(event);
+        });
     }
 }
 ```

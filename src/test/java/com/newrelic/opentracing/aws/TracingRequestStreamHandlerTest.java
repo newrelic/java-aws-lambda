@@ -35,7 +35,7 @@ public class TracingRequestStreamHandlerTest {
   public void before() {
     mockTracer.reset();
     // reset isColdStart before each test
-    TracingRequestStreamHandler.isColdStart.set(true);
+    LambdaTracing.isColdStart.set(true);
   }
 
   @Test
