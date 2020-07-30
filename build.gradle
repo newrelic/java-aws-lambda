@@ -48,6 +48,15 @@ dependencies {
     testImplementation 'io.opentracing:opentracing-mock:0.33.0'
 }
 
+// -Prelease=true will render a non-snapshot version
+// All other values (including unset) will render a snapshot version.
+def release = findProperty("release")
+version = project.findProperty("version")
+
+if (!release) {
+    version += "-SNAPSHOT"
+}
+
 jar {
     from(projectDir) { include "README.md" }
 
