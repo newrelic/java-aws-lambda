@@ -20,6 +20,13 @@ plugins {
     id 'signing'
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+    withJavadocJar()
+}
+
 apply plugin: 'com.github.sherter.google-java-format'
 
 repositories {
@@ -28,9 +35,6 @@ repositories {
         url 'https://oss.sonatype.org/content/repositories/snapshots'
     }
 }
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
     implementation 'com.amazonaws:aws-lambda-java-core:1.1.0'
