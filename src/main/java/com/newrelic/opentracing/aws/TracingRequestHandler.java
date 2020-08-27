@@ -6,13 +6,9 @@
 package com.newrelic.opentracing.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import io.opentracing.Scope;
-import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
-import io.opentracing.util.GlobalTracer;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Tracing request handler that creates a span on every invocation of a Lambda.
@@ -20,13 +16,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p>Implement this interface and update your AWS Lambda Handler name to reference your class name,
  * e.g., com.mycompany.HandlerClass
  *
+ * <p>Due to an interaction between Java's type erasure and method inheritance, Input effectively
+ * must be a Map. For that reason, this interface is deprecated in favor of {@link LambdaTracing}.
+ *
  * @param <Input> The input parameter type
  * @param <Output> The output parameter type
  */
+@Deprecated
 public interface TracingRequestHandler<Input, Output>
     extends com.amazonaws.services.lambda.runtime.RequestHandler<Input, Output> {
-
-  AtomicBoolean isColdStart = new AtomicBoolean(true);
 
   /**
    * Method that handles the Lambda function request.
@@ -40,22 +38,7 @@ public interface TracingRequestHandler<Input, Output>
   Output doHandleRequest(Input input, Context context);
 
   default Output handleRequest(Input input, Context context) {
-    final Tracer tracer = GlobalTracer.get();
-    final SpanContext spanContext = extractContext(tracer, input);
-
-    Span span = SpanUtil.buildSpan(input, context, tracer, spanContext, isColdStart);
-    try (Scope scope = tracer.activateSpan(span)) {
-      try {
-        Output output = doHandleRequest(input, context);
-        ResponseParser.parseResponse(output, span);
-        return output;
-      } catch (Throwable throwable) {
-        span.log(SpanUtil.createErrorAttributes(throwable));
-        throw throwable;
-      }
-    } finally {
-      span.finish();
-    }
+    return LambdaTracing.instrument(input, context, this::doHandleRequest);
   }
 
   /**
