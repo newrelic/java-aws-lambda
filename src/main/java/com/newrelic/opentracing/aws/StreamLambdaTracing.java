@@ -48,12 +48,10 @@ public class StreamLambdaTracing {
 
     Span span = buildRootSpan(input, context, tracer, spanContext);
     try (Scope scope = tracer.activateSpan(span)) {
-      try {
-        realHandler.handleRequest(input, output, context);
-      } catch (Throwable throwable) {
-        span.log(SpanUtil.createErrorAttributes(throwable));
-        throw throwable;
-      }
+      realHandler.handleRequest(input, output, context);
+    } catch (Throwable throwable) {
+      span.log(SpanUtil.createErrorAttributes(throwable));
+      throw throwable;
     } finally {
       span.finish();
     }

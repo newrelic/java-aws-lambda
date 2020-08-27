@@ -62,19 +62,7 @@ dependencies {
 #### Example Usage
 
 ```java
-package com.handler.example;
-
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
-import com.newrelic.opentracing.LambdaTracer;
-import com.newrelic.opentracing.aws.LambdaTracing;
-import io.opentracing.util.GlobalTracer;
-
-import java.util.Map;
-
-public static class YourLambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+public class YourLambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
     static {
         // Obtain an instance of the OpenTracing Tracer of your choice
         Tracer tracer = LambdaTracer.INSTANCE;

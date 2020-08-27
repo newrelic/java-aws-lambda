@@ -52,14 +52,12 @@ public class LambdaTracing<Input, Output> {
 
     Span span = buildRootSpan(input, context, tracer, spanContext);
     try (Scope scope = tracer.activateSpan(span)) {
-      try {
-        Output output = realHandler.apply(input, context);
-        parseResponse(span, output);
-        return output;
-      } catch (Throwable throwable) {
-        span.log(SpanUtil.createErrorAttributes(throwable));
-        throw throwable;
-      }
+      Output output = realHandler.apply(input, context);
+      parseResponse(span, output);
+      return output;
+    } catch (Throwable throwable) {
+      span.log(SpanUtil.createErrorAttributes(throwable));
+      throw throwable;
     } finally {
       span.finish();
     }

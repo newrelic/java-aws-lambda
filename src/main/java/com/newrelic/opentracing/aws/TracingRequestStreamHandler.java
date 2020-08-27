@@ -41,7 +41,7 @@ public interface TracingRequestStreamHandler
     try {
       StreamLambdaTracing.instrument(input, output, context, this::doHandleRequest);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException("Exception while processing Lambda invocation", e);
     }
   }
 
