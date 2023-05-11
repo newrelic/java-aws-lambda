@@ -50,7 +50,7 @@ Below are a list of the collected exception attributes:
 You can add the dependency by adding the following to your `build.gradle` file:
 ```
 dependencies {
-    implementation "com.newrelic.opentracing:java-aws-lambda:2.1.0"
+    implementation "com.newrelic.opentracing:java-aws-lambda:2.1.1"
 }
 ```
 
