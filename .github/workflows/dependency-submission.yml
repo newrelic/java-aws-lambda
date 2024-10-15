@@ -1,0 +1,29 @@
+name: Dependency Submission
+
+on:
+  push:
+    branches: [ 'main' ]
+
+permissions:
+  contents: write
+
+jobs:
+  dependency-submission:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # pin@v4
+      - name: Setup Java
+        uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73 # pin@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - name: Generate and submit dependency graph
+        uses: gradle/actions/dependency-submission@d156388eb19639ec20ade50009f3d199ce1e2808 # pin@v4
+        with:
+          gradle-version: 7.5.1
+          dependency-graph-exclude-configurations: '.*[Tt]est(Compile|Runtime)Classpath'
+          dependency-graph-continue-on-failure: true
+          build-scan-publish: true
+          build-scan-terms-of-use-url: "https://gralde.com/help/legal-terms-of-use"
+          build-scan-terms-of-use-agree: "yes"
