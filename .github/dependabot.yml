@@ -1,0 +1,14 @@
+# Dependabot Configuration
+#
+# This configuration file specifies the settings for Dependabot Scanning.
+# It monitors the Gradle dependencies and runs checks
+# on a weekly basis. This will only provide vulnerability alerts and will not create
+# pull requests for version updates.
+
+version: 2
+updates:
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 0
