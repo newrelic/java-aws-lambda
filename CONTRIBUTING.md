@@ -37,17 +37,8 @@ Before we can accept a pull request, you must sign our [Contributor Licensing Ag
 Minimally, the [test suite](#testing-guidelines) must pass for us to accept a PR. Ideally, we would love it if you also added appropriate tests if you're implementing a feature!
 
 ## Coding Style Guidelines
-Our code base is formatted according to the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html).
-
-The project is configured to use the [google-java-format-gradle-plugin](https://github.com/sherter/google-java-format-gradle-plugin) which can be utilized as follows:  
-
-* Execute the task `googleJavaFormat` to format all `*.java` files in the project:
-
-`./gradlew goJF`
-
-* Execute the task `verifyGoogleJavaFormat` to verify that all `*.java` files are formatted properly:
-
-`./gradlew verGJF`
+- Use the style provided in `dev-tools/code-style/java-agent-code-style.xml` in the project.
+- We encourage you to reduce tech debt you might find in the area. Leave the code better than you found it.
 
 ## Testing Guidelines
 The AWS Lambda OpenTracing Java SDK comes with tests in `src/test` that can be run with `./gradlew test`.

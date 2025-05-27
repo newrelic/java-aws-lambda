@@ -9,6 +9,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,39 +25,39 @@ import java.io.OutputStream;
  */
 @Deprecated
 public interface TracingRequestStreamHandler
-    extends com.amazonaws.services.lambda.runtime.RequestStreamHandler {
+        extends com.amazonaws.services.lambda.runtime.RequestStreamHandler {
 
-  /**
-   * Method that handles the Lambda function request.
-   *
-   * <p>Override this method in your code.
-   *
-   * @param input The Lambda Function input stream
-   * @param output The Lambda Function output stream
-   * @param context The Lambda execution environment context object
-   */
-  void doHandleRequest(InputStream input, OutputStream output, Context context);
+    /**
+     * Method that handles the Lambda function request.
+     *
+     * <p>Override this method in your code.
+     *
+     * @param input   The Lambda Function input stream
+     * @param output  The Lambda Function output stream
+     * @param context The Lambda execution environment context object
+     */
+    void doHandleRequest(InputStream input, OutputStream output, Context context);
 
-  default void handleRequest(InputStream input, OutputStream output, Context context) {
-    try {
-      StreamLambdaTracing.instrument(input, output, context, this::doHandleRequest);
-    } catch (IOException e) {
-      throw new RuntimeException("Exception while processing Lambda invocation", e);
+    default void handleRequest(InputStream input, OutputStream output, Context context) {
+        try {
+            StreamLambdaTracing.instrument(input, output, context, this::doHandleRequest);
+        } catch (IOException e) {
+            throw new RuntimeException("Exception while processing Lambda invocation", e);
+        }
     }
-  }
 
-  /**
-   * Override to extract context from Input.
-   *
-   * <p>Implementations should call {@link Tracer#extract(Format, Object)} and return the extracted
-   * SpanContext.
-   *
-   * @param tracer OpenTracing tracer
-   * @param input Input to Lambda function
-   * @return SpanContext Extracted from input, null if there was no context or there was an issue
-   *     extracting this context
-   */
-  default SpanContext extractContext(Tracer tracer, InputStream input) {
-    return null;
-  }
+    /**
+     * Override to extract context from Input.
+     *
+     * <p>Implementations should call {@link Tracer#extract(Format, Object)} and return the extracted
+     * SpanContext.
+     *
+     * @param tracer OpenTracing tracer
+     * @param input  Input to Lambda function
+     * @return SpanContext Extracted from input, null if there was no context or there was an issue
+     * extracting this context
+     */
+    default SpanContext extractContext(Tracer tracer, InputStream input) {
+        return null;
+    }
 }
