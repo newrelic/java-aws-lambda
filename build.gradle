@@ -30,8 +30,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'software.amazon.awssdk:s3:2.31.43'
-    implementation 'software.amazon.awssdk:s3-event-notifications:2.31.43'
+    implementation platform("software.amazon.awssdk:bom:2.40.11")
+    implementation 'software.amazon.awssdk:s3'
+    implementation 'software.amazon.awssdk:s3-event-notifications'
 
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'
     implementation 'com.amazonaws:aws-lambda-java-events:3.15.0'
