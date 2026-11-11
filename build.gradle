@@ -31,18 +31,18 @@ repositories {
 
 dependencies {
 //     Bump the BOM version only to avoid mixing AWS SDK versions
-    implementation platform("software.amazon.awssdk:bom:2.46.5")
+    implementation platform("software.amazon.awssdk:bom:2.57.13")
     implementation 'software.amazon.awssdk:s3'
     implementation 'software.amazon.awssdk:s3-event-notifications'
 
-    implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'
-    implementation 'com.amazonaws:aws-lambda-java-events:3.15.0'
+    implementation 'com.amazonaws:aws-lambda-java-core:1.4.1'
+    implementation 'com.amazonaws:aws-lambda-java-events:3.16.1'
 
     implementation('io.opentracing:opentracing-api:0.33.0')
     implementation('io.opentracing:opentracing-util:0.33.0')
     implementation('io.opentracing:opentracing-noop:0.33.0')
 
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.hamcrest:hamcrest-library:1.3'
     testImplementation 'io.opentracing:opentracing-mock:0.33.0'
 }
